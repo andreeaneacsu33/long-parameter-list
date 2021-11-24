@@ -5,24 +5,23 @@ import re
 class Method(object):
     description = "Class for the method representation"
 
-    def __init__(self, name, parameter_list):
+    def __init__(self, name, parameters):
         self._name = name
-        self._parameter_list = parameter_list
+        self._parameters = parameters
 
     def get_name(self):
         return self._name
 
     def get_parameter_list(self):
-        return self._parameter_list
+        return self._parameters
 
     def __str__(self):
-        return '{} {}'.format(self._name, self._parameter_list)
+        return '{} {}'.format(self._name, self._parameters)
 
 
 class Extractor(object):
     description = "Class for extracting methods from source code files"
-    EXCLUDED_PARAMETERS = ['self', 'cls']
-    EXCLUDED_CHARACTER = "="
+    EXCLUDED_PARAMETERS = ['self', 'cls', '*args', '**kwargs']
 
     def __init__(self, directory):
         self._directory = directory
@@ -31,9 +30,10 @@ class Extractor(object):
         methods = []
         for root, dirs, files in os.walk(self._directory):
             for file in files:
-                file_path = root + '/' + file
-                file_methods = self._extract_file_methods(file_path)
-                methods = methods + file_methods
+                if file.endswith('.py'):
+                    file_path = root + '/' + file
+                    file_methods = self._extract_file_methods(file_path)
+                    methods = methods + file_methods
         return methods
 
     def _extract_file_methods(self, filename):
@@ -43,7 +43,7 @@ class Extractor(object):
         :return: the list of methods
         """
         methods = []
-        f = open(filename, 'r')
+        f = open(filename, encoding='ISO-8859-1')
         methods_signature = self._get_methods_signature(f)
 
         for name, parameters in methods_signature:
@@ -61,8 +61,7 @@ class Extractor(object):
         """
         parameters_list = parameters.replace(' ', '').split(',')
         return [parameter for parameter in parameters_list
-                if parameter not in self.EXCLUDED_PARAMETERS
-                and self.EXCLUDED_CHARACTER not in parameter]
+                if parameter not in self.EXCLUDED_PARAMETERS]
 
     @staticmethod
     def _get_methods_signature(f):
