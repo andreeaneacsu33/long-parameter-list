@@ -21,7 +21,7 @@ class Method(object):
 
 class Extractor(object):
     description = "Class for extracting methods from source code files"
-    EXCLUDED_PARAMETERS = ['self', 'cls', '*args', '**kwargs']
+    EXCLUDED_PARAMETERS = ['self', 'cls', '*args', '**kwargs', '*']
 
     def __init__(self, directory):
         self._directory = directory
@@ -60,8 +60,25 @@ class Extractor(object):
         :return: the modified list of parameters
         """
         parameters_list = parameters.replace(' ', '').split(',')
+        parameters_list = self._format_parameters(parameters_list)
         return [parameter for parameter in parameters_list
                 if parameter not in self.EXCLUDED_PARAMETERS]
+
+    def _format_parameters(self, parameters):
+        """
+        Method that formats the parameters that have default values
+        :param parameters: list of parameters
+        :return: the list of formatted parameters
+        """
+        formatted_parameters = []
+        for parameter in parameters:
+            parameter.replace('"', "'")
+            if '=' in parameter:
+                formatted_parameters.append(parameter.split('=')[0])
+            else:
+                formatted_parameters.append(parameter)
+
+        return formatted_parameters
 
     @staticmethod
     def _get_methods_signature(f):
