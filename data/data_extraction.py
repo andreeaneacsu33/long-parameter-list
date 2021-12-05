@@ -64,7 +64,8 @@ class Extractor(object):
         return [parameter for parameter in parameters_list
                 if parameter not in self.EXCLUDED_PARAMETERS]
 
-    def _format_parameters(self, parameters):
+    @staticmethod
+    def _format_parameters(parameters):
         """
         Method that formats the parameters that have default values
         :param parameters: list of parameters
