@@ -13,6 +13,7 @@ def _print_methods(proc):
     for method in methods:
         print(method)
 
+
 def main():
     ext = Extractor(os.environ.get('DIRECTORY_PATH'))
     methods = ext.extract_methods()
@@ -34,7 +35,8 @@ def main():
     parameters_df_list['Count'] = 1
 
     # Group by items and rename columns
-    parameters_df_list = parameters_df_list.groupby(by=[0], as_index=False).count().sort_values(by=['Count'], ascending=True)  # count
+    parameters_df_list = parameters_df_list.groupby(by=[0], as_index=False).count().sort_values(by=['Count'],
+                                                                                                ascending=True)  # count
     parameters_df_list['Percentage'] = (parameters_df_list['Count'] / parameters_df_list['Count'].sum())  # percentage
     parameters_df_list = parameters_df_list.rename(columns={0: 'Item'})
 
