@@ -33,9 +33,9 @@ class Processor:
             row = []
             for parameter in unique_parameters:
                 if parameter in p_list:
-                    row.append(1)
+                    row.append(parameter)
                 else:
-                    row.append(0)
+                    row.append(None)
             parameters_frequency.append(row)
         self._parameters_frequency = parameters_frequency
         print(unique_parameters)
